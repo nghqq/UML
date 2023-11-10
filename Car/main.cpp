@@ -43,17 +43,61 @@ public:
 		std::cout << "Fuel lvl: " << fuel << " liters.\n";
 	}
 };
+#define MIN_ENGINE_CONSUMPTION 3
+#define MAX_ENGINE_CONSUMPTION 30
+class Engine 
+{
+	const double CONSUMPTION;
+	double consumption_per_second;
+	bool is_started;
+public:
+	double get_CONSUMPTION()const 
+	{
+		return CONSUMPTION;
+	}
+	double get_consumption_per_second()const
+	{
+		return consumption_per_second;
+	}
+	void start() 
+	{
+		is_started = true;
+	}
+	void stop() 
+	{
+		is_started = false;
+	}
+	bool started()const 
+	{
+		return is_started;
+	}
+
+	Engine(double consumption) :CONSUMPTION
+	(
+		consumption < MIN_ENGINE_CONSUMPTION ? MIN_ENGINE_CONSUMPTION :
+		consumption > MAX_ENGINE_CONSUMPTION ? MAX_ENGINE_CONSUMPTION :
+		consumption
+	)
+	{
+		consumption_per_second = CONSUMPTION * 3e-5;
+		is_started = false;
+		std::cout << "Engine ready" << this << std::endl;
+	}
+	~Engine() 
+	{
+		std::cout << "Engine is over" << this << std::endl;
+	}
+	void info()const 
+	{
+		std::cout << "Consumption: " << get_CONSUMPTION() << " liters.\n";
+		std::cout << "Consumption/sec: " << get_consumption_per_second() << "liters.\n";
+	}
+};
 
 void main() 
 {
 	setlocale(LC_ALL, "");
 
-	Tank tank(12);
-	double fuel;
-	do
-	{
-		std::cout << "¬ведите уровень топлива: "; std::cin >> fuel;
-		tank.fill(fuel);
-		tank.info();
-	} while (fuel!=0);
+	Engine engine(20);
+	engine.info();
 }
