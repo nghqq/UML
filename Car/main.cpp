@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <conio.h>
 
 #define MIN_TANK_VOLUME 20
 #define MAX_TANK_VOLUME 120
@@ -85,7 +85,7 @@ public:
 	}
 	~Engine() 
 	{
-		std::cout << "Engine is over" << this << std::endl;
+		std::cout << "Engine is over\t"  << this << std::endl;
 	}
 	void info()const 
 	{
@@ -94,10 +94,107 @@ public:
 	}
 };
 
+#define MAX_SPEED_LOW_LVL 50
+#define MAX_SPEED_HIGH_LVL 450
+
+class Car 
+{
+	Engine engine;
+	Tank tank;
+	const int MAX_SPEED;
+	int speed;
+	bool driver_inside;
+public:
+	int get_MAX_SPEED()const 
+	{
+		return MAX_SPEED;
+	}
+	int get_speed()const 
+	{
+		return speed;
+	}
+	Car(int max_speed, double consumption = 10, int volume = 40) :MAX_SPEED
+	(
+		max_speed < MAX_SPEED_LOW_LVL ? MAX_SPEED_LOW_LVL :
+		max_speed > MAX_SPEED_HIGH_LVL ? MAX_SPEED_HIGH_LVL :
+		max_speed
+	),engine(consumption),tank(volume)
+	{
+		this->speed = 0;
+		std::cout << "Car is ready, Press Enter to get in" << this << std::endl;
+	}
+	~Car() 
+	{
+		std::cout << "Your car destroyed:\t" << this << std::endl;
+	}
+	void fill(double fuel) 
+	{
+		tank.fill(fuel);
+	}
+	void get_in() 
+	{
+		driver_inside = true;
+		panel();
+	}
+	void get_out() 
+	{
+		driver_inside = false;
+		std::cout << "You are out " << std::endl;
+
+	}
+	void control()
+	{
+		char key;
+		do
+		{
+			key = _getch();
+			switch (key)
+			{
+			case 'F':
+			case  'f':
+			{
+				if(driver_inside)
+				{
+					std::cout << "First of all get out your car" << std::endl;
+					break;
+				}
+				double fuel;
+				std::cout << "¬ведите уровень топлива: "; std::cin >> fuel;
+				fill(fuel);
+			}
+				break;
+			case 13:
+				if (driver_inside)get_out();
+				else get_in();
+			}
+		} while (key!=27);
+	}
+	void panel()const 
+	{
+		while (driver_inside)
+		{
+			system("CLS");
+			std::cout << "Fuel Level: " << tank.get_fuel() << "liters.\n";
+			std::cout << "Engine is " << (engine.started() ? "started" : "stopped") << std::endl;
+		}
+	}
+	void info()const 
+	{
+		engine.info();
+		tank.info();
+	}
+
+};
+
 void main() 
 {
 	setlocale(LC_ALL, "");
 
-	Engine engine(20);
-	engine.info();
+	//Engine engine(20);
+	//engine.info();
+
+	Car car(250);
+	//car.info();
+	car.control();
+
 }
